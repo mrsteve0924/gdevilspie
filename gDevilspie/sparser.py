@@ -60,7 +60,6 @@ def tokenize_file(fp):
 
 # Exception raised by parse_exr.
 #
-syntax_error = 'syntax error'
 
 
 # Parse an S-expression.
@@ -72,12 +71,12 @@ syntax_error = 'syntax error'
 #
 def parse_expr(tokens):
     if (not tokens) or tokens[0] != '(':
-        raise syntax_error, 'expected "("'
+        raise SyntaxError('expected "("')
     tokens = tokens[1:]
     expr = []
     while 1:
         if not tokens:
-            raise syntax_error, 'missing ")"'
+            raise SyntaxError('missing ")"')
         if tokens[0] == ')':
             return expr, tokens[1:]
         elif tokens[0] == '(':

@@ -1,10 +1,13 @@
-import wnck
+import gi
 
-#Get Default X screen
-screen = wnck.screen_get_default()
+gi.require_version("Wnck", "3.0")
+from gi.repository import Wnck
 
 #List of wnck.Window objects
 def Get_Window_List():
+    screen = Wnck.Screen.get_default()
+    if screen is None:
+        return []
     screen.force_update()
     return screen.get_windows()
 
@@ -13,17 +16,18 @@ def Get_Windowname_List():
     windowlist = Get_Window_List()
     namelist = []
     for i in windowlist:
-		namelist.append(i.get_name())
+                namelist.append(i.get_name())
     return windowlist , namelist
 
 #this function takes a window object (choosen by the user) and returns its matching criteria
 def Matchdict_Window(window):
     matchdict = {}
     matchdict["window_name"] = window.get_name()
-    matchdict["window_role"] = window.get_window_type().value_nick
-    matchdict["window_class"] = window.get_class_group().get_name()
+    matchdict["window_role"] = window.get_role() or ""
+    matchdict["window_class"] = window.get_class_group_name() or ""
     matchdict["window_xid"] = window.get_xid()
-    matchdict["application_name"] = window.get_application().get_name()
+    application = window.get_application()
+    matchdict["application_name"] = application.get_name() if application else ""
     matchdict["window_property"] = "" #Is that even relevant? nobody uses it.
     if window.get_workspace() != None:
         matchdict["window_workspace"] = window.get_workspace().get_number()
